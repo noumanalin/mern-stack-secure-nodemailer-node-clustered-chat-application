@@ -64,3 +64,40 @@ export const loginValidations = [
     .withMessage("Password must contain at least one special character")
     
 ]
+
+
+
+
+export const sendMessageValidations = [
+  body('senderId')
+    .trim()
+    .notEmpty().withMessage("Sender ID must not be empty.")
+    .isMongoId().withMessage("Sender ID must be a valid MongoDB ObjectId.")
+    .escape(),
+
+  body('receiverId')
+    .trim()
+    .notEmpty().withMessage("Receiver ID must not be empty.")
+    .isMongoId().withMessage("Receiver ID must be a valid MongoDB ObjectId.")
+    .escape(),
+
+  body('message')
+    .trim()
+    .notEmpty().withMessage("Message must not be empty.")
+    .isLength({ min: 1, max: 1000 }).withMessage("Message must be between 1 and 1000 characters.")
+    .escape()
+];
+
+export const getMessagesValidation = [
+  body('senderId')
+    .trim()
+    .notEmpty().withMessage("Sender ID is required.")
+    .isMongoId().withMessage("Sender ID must be a valid MongoDB ObjectId.")
+    .escape(),
+
+  body('receiverId')
+    .trim()
+    .notEmpty().withMessage("Receiver ID is required.")
+    .isMongoId().withMessage("Receiver ID must be a valid MongoDB ObjectId.")
+    .escape()
+];

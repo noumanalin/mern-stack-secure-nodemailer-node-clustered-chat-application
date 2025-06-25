@@ -17,7 +17,8 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "https://localhost:5174"
 
 import { sendEmail } from './lib/nodeMailer.js';
 import { connectDB } from './lib/connectDB.js';
-import authRoutes from './rotues/auth.routes.js'
+import authRoutes from './rotues/auth.routes.js';
+import MessageRoutes from './rotues/message.routes.js';
 
 if(cluster.isPrimary){
 
@@ -58,6 +59,7 @@ if(cluster.isPrimary){
     })
 
     app.use('/api/auth', authRoutes)
+    app.use('/api/message', MessageRoutes)
 
     app.listen(PORT, ()=>{
         console.log(`✔ Server is running on port ${PORT} with process id: ${process.pid})`)
