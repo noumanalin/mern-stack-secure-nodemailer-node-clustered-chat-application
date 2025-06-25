@@ -1,0 +1,29 @@
+import { body } from 'express-validator'
+
+
+export const registerValidations = [
+    body('userName')
+    .trim()
+    .notEmpty().withMessage('User name must not be empty.')
+    .isLength({min:3, max:50}).withMessage('User name must have minimum three unique alpha character!')
+    .escape()
+
+    ,
+    body('email')
+    .trim()
+    .notEmpty().withMessage('Email is required')
+    .escape()
+    .normalizeEmail()
+    ,
+     body("password")
+    .isLength({ min: 4 })
+    .withMessage("Password must be at least 4 characters long")
+    .matches(/[A-Z]/)
+    .withMessage("Password must contain at least one uppercase letter")
+    .matches(/[a-z]/)
+    .withMessage("Password must contain at least one lowercase letter")
+    .matches(/[0-9]/)
+    .withMessage("Password must contain at least one number")
+    .matches(/[^A-Za-z0-9]/)
+    .withMessage("Password must contain at least one special character"),
+]
