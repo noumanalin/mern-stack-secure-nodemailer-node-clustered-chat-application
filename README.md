@@ -4,15 +4,13 @@ A full-stack MERN (MongoDB, Express.js, React, Node.js) chat app to learn backen
 
 
 
-
-# 📋 Deatail API Documentation
-
+# 📋 Detailed API Documentation
 
 ## Register API
 
 ### 📍 POST `/api/auth/register`
 
-Registers a new user with validation.
+Registers a new user with form-data submission.
 
 #### ✅ Required Fields:
 - `userName`: Must be a string with at least 3 characters.
@@ -23,19 +21,27 @@ Registers a new user with validation.
   - Contain one lowercase letter
   - Contain one number
   - Contain one special character
+- `gender`: One of: `male`, `female`, `transgender`
 
-#### 🧪 Sample Request:
+#### 🖼 Optional Field:
+- `profileImage`: Image file (max 2MB). JPG/PNG recommended.
 
+#### 📤 Submit Type: `multipart/form-data`
+
+#### 🧪 Sample Request using Postman:
 ```json
 {
   "userName": "AliDev",
   "email": "ali@example.com",
-  "password": "Ali@1234"
+  "password": "Ali@1234",
+  "gender":"male",
+  "profileImage": ""
 }
 ```
 
 #### 🎉 Success Response
 ##### http status code 200
+##### And an welcome Email Send to user
 ```json
 {
   "success": true,
@@ -55,11 +61,11 @@ Registers a new user with validation.
 }
 ```
 
-#### 🔴 Server Error (Status 500):
+#### 🔴 Large Image Error (Status 400)
 ```json
 {
   "success": false,
-  "error": "Something went wrong"
+  "message": "Image size should be less than 2MB"
 }
 ```
 
@@ -74,5 +80,13 @@ Registers a new user with validation.
     "Password must contain at least one number"
   ],
   "message": "Kindly fulfill all requirements"
+}
+```
+
+#### 🔴 Server Error (Status 500):
+```json
+{
+  "success": false,
+  "error": "Something went wrong"
 }
 ```
