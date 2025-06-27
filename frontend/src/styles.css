@@ -1,0 +1,22 @@
+@import "tailwindcss";
+@tailwind utilities;
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* Required for placeholder to show */
+.tiptap {
+  position: relative;
+}
+
+.tiptap.is-editor-empty::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  color: #999;
+  pointer-events: none;
+  height: 0;
+}

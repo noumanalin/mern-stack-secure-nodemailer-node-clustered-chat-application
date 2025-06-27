@@ -1,6 +1,7 @@
 import { validationResult } from "express-validator";
 import { Message } from "../models/message.model.js";
 import { Conversation } from "../models/conversation.model.js";
+import sanitizeHtml from 'sanitize-html';
 
 export const SendMessage = async (req, res) => {
     const errors = validationResult(req);
@@ -25,7 +26,14 @@ export const SendMessage = async (req, res) => {
   }
 
   try {
-    const newMessage = await Message.create({ senderId, receiverId, message });
+
+    // Sanitize the message: allow basic formatting
+    const cleanMessage = sanitizeHtml(message, {
+      allowedTags: ['b', 'i', 'u', 'strong', 'em', 'ul', 'ol', 'li', 'br'],
+      allowedAttributes: {},
+    });
+
+    const newMessage = await Message.create({ senderId, receiverId, message:cleanMessage });
 
     let conversation = await Conversation.findOne({
       members: { $all: [senderId, receiverId], $size: 2 }
