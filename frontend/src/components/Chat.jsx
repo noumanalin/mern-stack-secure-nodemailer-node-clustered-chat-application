@@ -19,7 +19,7 @@ const Chat = () => {
     <section className='bg-gray-100 flex flex-col justify-between h-screen'>
 
         {/* Chat head */}
-          <article className=' p-2  md:gap-[1000px] flex items-center justify-between '>
+          <article className=' p-2 flex items-center justify-between '>
             <div  className='flex items-center gap-1  text-black hover:text-blue-500 cursor-pointer' >
             <div className='relative'>
               <img className='w-[50px] h-[50px] rounded-full' src="/download.jpg" alt="user" />
@@ -38,7 +38,7 @@ const Chat = () => {
         {/* Messages */}
         <div className="p-3 overflow-y-auto h-[calc(100vh-130px)] bg-[url('/home-bg.jpg')]">
           {/* Received message */}
-          <div className="max-w-xs md:max-w-md bg-white text-black p-3 rounded-lg shadow-md w-fit">
+          <div className="max-w-xs md:max-w-md bg-white text-black p-3 rounded-lg shadow-md w-fit my-2">
             this is message I received from another userthis is message I received from another user
           </div>
 
