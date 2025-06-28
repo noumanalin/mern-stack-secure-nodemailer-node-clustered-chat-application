@@ -44,7 +44,7 @@ const Register = () => {
       if (profileImage) formData.append("profileImage", profileImage)
 
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/register`,
+        `${import.meta.env.VITE_BACKEND_URL}/auth/register`,
         formData,
         {
           headers: {
@@ -83,7 +83,7 @@ const Register = () => {
         <h1 className='text-2xl font-bold tracking-tighter text-center mb-4'>Registration</h1>
 
         {/* Profile Image Upload with Preview */}
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-4" title='Choose Profile Picture'>
           <div className="relative cursor-pointer" onClick={handleImageClick}>
             {previewImage ? (
               <img

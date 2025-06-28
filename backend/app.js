@@ -35,7 +35,7 @@ if(cluster.isPrimary){
     app.use(cookieParser());
     app.use(helmet());
     app.use(cors({
-        origin: [FRONTEND_URL, "https://localhost:5175"],
+        origin: ["http://localhost:5173", FRONTEND_URL, "https://localhost:5175"],
         methods: ["GET", "POST"],
         credentials: true
     }));

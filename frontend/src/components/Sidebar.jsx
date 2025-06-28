@@ -1,8 +1,25 @@
 import React, { useState } from 'react';
 import { CiLogout, CiHome } from "react-icons/ci";
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../redux/authSlice';
+import { toast } from 'react-toastify';
 
 const Sidebar = () => {
   const [showOptions, setOptions] = useState(false)
+  const {user} = useSelector(state => state.auth)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async ()=>{
+    const confrim = window.confirm('Are you sure to logout?')
+    if(confrim){
+      dispatch(logout())
+      toast.success('Your session is destroy successfully and you are logout now.')
+      navigate('/login')
+    }
+  }
+
   return (
     <section className="px-2 md:h-screen w-[250px] overflow-y-auto">
 
@@ -12,11 +29,11 @@ const Sidebar = () => {
           <input type="search" placeholder='Search' className='max-w-[150px] border-gray-600 border-1 rounded-md px-1 py-2' />
         </form>
 
-        <div className='relative' onClick={()=>setOptions(!showOptions)}>
-          <img  src="/download.jpg" alt="" className='w-[50px] h-[50px] rounded-full' />
+        <div title={user.userName} className='relative cursor-pointer' onClick={()=>setOptions(!showOptions)}>
+          <img  src={user.profileImage} alt="" className='w-[50px] h-[50px] rounded-full' />
           <span className={`${showOptions?'':'hidden'} absolute right-[10px]  p-3 bg-white shadow-xl rounded-md flex flex-col items-start gap-2 text-gray-500 font-semibold text-sm `}>
             <button className=' flex items-center gap-1 hover:text-blue-800 cursor-pointer'><CiHome /> Home</button>
-            <button className=' flex items-center gap-1 hover:text-red-800 cursor-pointer'><CiLogout /> Logout</button>
+            <button onClick={handleLogout} className=' flex items-center gap-1 hover:text-red-800 cursor-pointer'><CiLogout /> Logout</button>
           </span>
         </div>
       </header>

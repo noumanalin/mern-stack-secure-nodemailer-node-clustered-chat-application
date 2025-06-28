@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../store/user-slice"; 
+import { logout } from "../redux/authSlice.js"; 
 import { toast } from "react-toastify";
 
 const Logout = () => {
@@ -10,7 +10,7 @@ const Logout = () => {
 
   useEffect(() => {
     dispatch(logout()); 
-    toast.success("Logged out successfully");
+    toast.success("Your session logged out successfully 🎉");
     navigate("/login"); 
   }, [dispatch, navigate]);
 

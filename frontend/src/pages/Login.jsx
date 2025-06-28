@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FiEye, FiEyeOff } from 'react-icons/fi'
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios"
+import { loginSuccess } from '../redux/authSlice.js'; 
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -10,8 +12,17 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState([])
-
+  
+  const dispatch = useDispatch();
   const navigate = useNavigate()
+    const {isAuthenticated} = useSelector(state => state.auth)
+
+  useEffect(()=>{
+    if(isAuthenticated){
+      toast.warn('Your current status is LogedIn, So you don\'t need to vist login form?')
+      navigate('/')
+    }
+  }, [isAuthenticated, navigate])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -19,7 +30,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/login`,
+        `http://localhost:3000/api/auth/login`,
         { email, password },
         {
           headers: { "Content-Type": "application/json" },
@@ -29,13 +40,17 @@ const Login = () => {
 
       if (response.data.success) {
         toast.success(response.data.message)
+        
         setEmail("")
         setPassword("")
         setErrors([])
-        // TODO: save user data in redux-presist-store
+        console.log(`Response Data: ${response.data}`)
+        const { user, token } = response.data;
+        dispatch(loginSuccess({ user, token }));
         navigate("/") 
       }
     } catch (error) {
+      console.log(`Login error: ${error}`)
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors)
       } else if (error.response?.data?.message) {
@@ -67,6 +82,8 @@ const Login = () => {
           <input
             type="email"
             placeholder='Email'
+            name="email"
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className='outline-none border-none w-full'
@@ -79,14 +96,16 @@ const Login = () => {
           <input
             type={showPassword ? 'text' : 'password'}
             placeholder='Password'
+            name="password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className='outline-none border-none w-full'
             required
           />
-          <span onClick={() => setShowPassword(!showPassword)} className='cursor-pointer ml-2 text-gray-500'>
+          <button onClick={() => setShowPassword(!showPassword)} className='cursor-pointer ml-2 text-gray-500'>
             {showPassword ? <FiEyeOff /> : <FiEye />}
-          </span>
+          </button>
         </div>
 
         {/* Login Button */}

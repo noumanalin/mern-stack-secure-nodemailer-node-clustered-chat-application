@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { loginSuccess } from "../store/user-slice";
+import { loginSuccess } from "../redux/user-slice";
 
 interface LoginData {
   email: string;
