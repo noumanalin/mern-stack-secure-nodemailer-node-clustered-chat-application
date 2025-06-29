@@ -1,16 +1,60 @@
-import React, { useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { CiLogout, CiHome } from "react-icons/ci";
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../redux/authSlice';
 import { toast } from 'react-toastify';
+import { setSelectedUser } from '../redux/userSlice.js';
+import axios from 'axios';
+import UserItem from './UserItem.jsx';
+import UserImage from './UserImage.jsx';
+import SkeletonUser from './SkeletonUser.jsx';
 
 const Sidebar = () => {
   const [showOptions, setOptions] = useState(false)
-  const {user} = useSelector(state => state.auth)
+  const [users, setUers] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [search, setSearch] = useState("")
+  const [onlineUsers, setOnLineUsers] = useState([])
+
+  const { user, token } = useSelector(state => state.auth)
+  const { slectedUser } = useSelector(state => state.user)
+ 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+
+  // -------------------------------------------------------------------------------------------------------------------
+    const fetchAllUsers = async ()=>{
+    try {
+      setLoading(true)
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/getUser`, 
+        {
+        withCredentials: true,
+        headers: { Authorization: `Bearer ${token}` }, 
+      }
+      )
+
+      if(res?.status == 200 || res?.data?.success == true ){
+        setUers(res?.data?.users)
+      }
+    } catch (error) {
+      toast.warn(`There is an error to fetch users`)
+    } finally {
+      setLoading(false)
+    }
+
+  }
+
+   useEffect(() => {
+    fetchAllUsers();
+  }, []);
+  // -------------------------------------------------------------------------------------------------------------------
+const usersFilter = users
+                .filter((cu) => cu._id !== user._id)
+                .filter((u) => u.userName.toLowerCase().includes(search.toLowerCase()))
+
+  // -------------------------------------------------------------------------------------------------------------------
   const handleLogout = async ()=>{
     const confrim = window.confirm('Are you sure to logout?')
     if(confrim){
@@ -20,17 +64,30 @@ const Sidebar = () => {
     }
   }
 
+  // -------------------------------------------------------------------------------------------------------------------
+  const handleUserSelect = (selectedUser) => {
+    dispatch(setSelectedUser(selectedUser));
+    // setSidebarOpen(false);
+  };
+
+  // -------------------------------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------------------------------
+
+
+
+
   return (
     <section className="px-2 md:h-screen w-[250px] overflow-y-auto">
 
       <header className='fixed py-2 z-50 bg-white flex items-center justify-center gap-5'>
         {/* Search Form */}
         <form action="">
-          <input type="search" placeholder='Search' className='max-w-[150px] border-gray-600 border-1 rounded-md px-1 py-2' />
+          <input onChange={(e)=>setSearch(e.target.value)} type="search" placeholder='Search' className='max-w-[150px] border-gray-600 border-1 rounded-md px-1 py-2' />
         </form>
 
-        <div title={user.userName} className='relative cursor-pointer' onClick={()=>setOptions(!showOptions)}>
-          <img  src={user.profileImage} alt="" className='w-[50px] h-[50px] rounded-full' />
+        <div title={user?.userName} className='relative cursor-pointer' onClick={()=>setOptions(!showOptions)}>
+          <UserImage profileImage={user?.profileImage} gender={user?.gender} />
           <span className={`${showOptions?'':'hidden'} absolute right-[10px]  p-3 bg-white shadow-xl rounded-md flex flex-col items-start gap-2 text-gray-500 font-semibold text-sm `}>
             <button className=' flex items-center gap-1 hover:text-blue-800 cursor-pointer'><CiHome /> Home</button>
             <button onClick={handleLogout} className=' flex items-center gap-1 hover:text-red-800 cursor-pointer'><CiLogout /> Logout</button>
@@ -43,25 +100,25 @@ const Sidebar = () => {
       <h3 className='text-xl text-gray-700 font-semibold mb-6'>Users</h3>
 
       <ul className='flex gap-5 flex-col '>
-        {[...Array(6)].map((_, index) => (
-          <li
-            key={index}
-            className='flex items-center gap-1 text-sm text-black hover:text-blue-500 cursor-pointer'
-          >
-            <div className='relative'>
-              <img
-                className='w-[50px] h-[50px] rounded-full'
-                src="/download.jpg"
-                alt="user"
+       {loading ? (
+            <SkeletonUser />
+          ) : (
+            usersFilter && usersFilter.map((user, index) => (
+              <UserItem 
+              key={index} 
+              user={user} 
+              handleUserSelect={handleUserSelect} 
+              selected={user?._id == slectedUser?._id ? true:false}
               />
-              <span className="h-2.5 w-2.5 rounded-full bg-green-600 block absolute bottom-1 right-0"></span>
-            </div>
-            <p className='font-semibold'>Muhammad Ali</p>
-          </li>
-        ))}
+             
+            ))
+          )}
+
+
       </ul>
     </section>
   );
 };
 
 export default Sidebar;
+

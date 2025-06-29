@@ -9,12 +9,11 @@ const userSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
+        
         setSelectedUser: (state, action) => {
             state.slectedUser = action.payload;
-           
-           
-           
         },
+
         reomveSelectedUser:(state)=>{
             state.slectedUser=null
         }

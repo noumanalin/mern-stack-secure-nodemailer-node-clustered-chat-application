@@ -33,6 +33,7 @@ export const SendMessage = async (req, res) => {
       allowedAttributes: {},
     });
 
+
     const newMessage = await Message.create({ senderId, receiverId, message:cleanMessage });
 
     let conversation = await Conversation.findOne({
@@ -63,6 +64,7 @@ export const SendMessage = async (req, res) => {
     return res.status(500).json({
       success: false,
       error: "Internal server error",
+      message: "There is internal server error while sending message"
     });
   }
 };
@@ -106,7 +108,7 @@ export const getMessages = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Messages retrieved successfully",
-      data: conversation.messages
+      messages: conversation.messages
     });
 
   } catch (error) {
